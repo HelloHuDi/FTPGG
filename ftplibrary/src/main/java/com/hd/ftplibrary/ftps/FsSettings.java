@@ -20,40 +20,32 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.hd.ftplibrary.ftps;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.hd.ftplibrary.R;
+import com.hd.ftplibrary.model.FTPApp;
+import com.hd.ftplibrary.util.PreferenceUtils;
 
 import java.io.File;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class FsSettings {
 
     private final static String TAG = FsSettings.class.getSimpleName();
 
     public static String getUserName() {
-        final SharedPreferences sp = getSharedPreferences();
-        return sp.getString("username", "ftp");
+       return (String) PreferenceUtils.get(FTPApp.getAppContext(), "username", "ftp");
     }
 
     public static String getPassWord() {
-        final SharedPreferences sp = getSharedPreferences();
-        return sp.getString("password", "ftp");
+       return (String) PreferenceUtils.get(FTPApp.getAppContext(), "password", "ftp");
     }
 
     public static boolean allowAnoymous() {
-        final SharedPreferences sp = getSharedPreferences();
-        return sp.getBoolean("allow_anonymous", false);
+        return (boolean) PreferenceUtils.get(FTPApp.getAppContext(), "allow_anonymous", false);
     }
 
     public static File getChrootDir() {
-        final SharedPreferences sp = getSharedPreferences();
-        String dirName = sp.getString("chrootDir", "");
+        String dirName = (String) PreferenceUtils.get(FTPApp.getAppContext(), "chrootDir", "");
         File chrootDir = new File(dirName);
         // when the stored dirName was not initialized, initialize to good default
         // or when the chrootDir is garbage, initialize to good default
@@ -69,7 +61,7 @@ public class FsSettings {
             // if this happens, we are screwed
             // we give it the application directory
             // but this will probably not be what the user wants
-            return App.getAppContext().getFilesDir();
+            return FTPApp.getAppContext().getFilesDir();
         }
         return chrootDir;
     }
@@ -83,51 +75,20 @@ public class FsSettings {
         File chrootTest = new File(dir);
         if (!chrootTest.isDirectory() || !chrootTest.canRead())
                 return false;
-        final SharedPreferences sp = getSharedPreferences();
-        sp.edit().putString("chrootDir", dir).apply();
+        PreferenceUtils.put(FTPApp.getAppContext(),"chrootDir", dir);
         return true;
     }
 
     public static int getPortNumber() {
-        final SharedPreferences sp = getSharedPreferences();
         // TODO: port is always an number, so store this accordenly
-        String portString = sp.getString("portNum", "2121");
+        String portString = (String) PreferenceUtils.get(FTPApp.getAppContext(), "portNum", "2121");
         int port = Integer.valueOf(portString);
         Log.v(TAG, "Using port: " + port);
         return port;
     }
 
     public static boolean shouldTakeFullWakeLock() {
-        final SharedPreferences sp = getSharedPreferences();
-        return sp.getBoolean("stayAwake", false);
-    }
-
-    public static Set<String> getAutoConnectList() {
-        SharedPreferences sp = getSharedPreferences();
-        return sp.getStringSet("autoconnect_preference", new TreeSet<>());
-    }
-
-    public static int getTheme() {
-        SharedPreferences sp = getSharedPreferences();
-
-        switch(sp.getString("theme", "0")) {
-            case "0":
-                return R.style.AppThemeDark;
-            case "1":
-                return R.style.AppThemeLight;
-            case "2":
-                return R.style.AppThemeLight_DarkActionBar;
-        }
-
-        return R.style.AppThemeDark;
-    }
-
-    /**
-     * @return the SharedPreferences for this application
-     */
-    private static SharedPreferences getSharedPreferences() {
-        final Context context = App.getAppContext();
-        return PreferenceManager.getDefaultSharedPreferences(context);
+        return (boolean) PreferenceUtils.get(FTPApp.getAppContext(), "stayAwake", false);
     }
 
     // cleaning up after his

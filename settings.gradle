@@ -1,1 +1,1 @@
-include ':app', ':ftplibrary'
+include ':app', ':ftplibrary', ':javaTestlib'

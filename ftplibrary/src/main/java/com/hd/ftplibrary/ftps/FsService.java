@@ -36,6 +36,7 @@ import android.util.Log;
 
 import com.hd.ftplibrary.ftps.server.SessionThread;
 import com.hd.ftplibrary.ftps.server.TcpListener;
+import com.hd.ftplibrary.model.FTPApp;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -313,8 +314,8 @@ public class FsService extends Service implements Runnable {
      * @return true if connected to a local network
      */
     public static boolean isConnectedToLocalNetwork() {
-        boolean connected = false;
-        Context context = App.getAppContext();
+        boolean connected;
+        Context context = FTPApp.getAppContext();
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         connected = ni != null
