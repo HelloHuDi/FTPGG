@@ -1,7 +1,6 @@
 package com.hd.ftplibrary.model;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.hd.ftplibrary.ftpc.FTPClient;
 
@@ -11,15 +10,16 @@ import com.hd.ftplibrary.ftpc.FTPClient;
  */
 public class FcInfo extends FTPInfo {
 
-    private String loginUserName, loginPassword;
+    private String loginUserName = defaultUserNamePassword, loginPassword = defaultUserNamePassword;
 
     private FTPClient ftpClient;
 
     private FcInfo() {
+        this(null);
     }
 
-    private FcInfo(@NonNull Context context) {
-       setContext(context);
+    private FcInfo(Context context) {
+        setContext(context);
     }
 
     public String getLoginUserName() {
@@ -56,10 +56,10 @@ public class FcInfo extends FTPInfo {
         private FcInfo info;
 
         public Builder() {
-            info=new FcInfo();
+            this(null);
         }
 
-        public Builder(@NonNull Context context) {
+        public Builder(Context context) {
             info = new FcInfo(context);
         }
 

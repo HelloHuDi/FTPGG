@@ -1,12 +1,11 @@
 package com.hd.ftplibrary.model;
 
 import android.content.Context;
-import android.os.Environment;
-import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.hd.ftplibrary.ftps.FsService;
-
-import java.io.File;
+import com.hd.ftplibrary.ftps.FsSettings;
+import com.hd.ftplibrary.util.PreferenceUtils;
 
 /**
  * Created by hd on 2018/5/1 .
@@ -14,29 +13,22 @@ import java.io.File;
  */
 public class FsInfo extends FTPInfo {
 
-    private String accountUserName, accountPassword;
+    private String accountUserName = defaultUserNamePassword, accountPassword = defaultUserNamePassword;
 
-    private boolean allowAnonymous,takeFullWakeLock;
+    private boolean allowAnonymous = false, takeFullWakeLock = false;
 
-    private int portNumber;
+    private int portNumber = 2121;
 
-    private String chrootDirPath=defaultPath();
+    private String chrootDirPath;
 
     private FsService fsService;
 
     private FsInfo() {
+        this(null);
     }
 
-    private FsInfo(@NonNull Context context) {
+    private FsInfo(Context context) {
         setContext(context);
-    }
-
-    private String defaultPath() {
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            return Environment.getExternalStorageDirectory().getAbsolutePath();
-        } else {
-            return String.valueOf(new File("/"));
-        }
     }
 
     public String getAccountUserName() {
@@ -45,6 +37,7 @@ public class FsInfo extends FTPInfo {
 
     public void setAccountUserName(String accountUserName) {
         this.accountUserName = accountUserName;
+        PreferenceUtils.put(getContext(), "username", accountUserName);
     }
 
     public String getAccountPassword() {
@@ -53,6 +46,7 @@ public class FsInfo extends FTPInfo {
 
     public void setAccountPassword(String accountPassword) {
         this.accountPassword = accountPassword;
+        PreferenceUtils.put(getContext(), "password", accountPassword);
     }
 
     public boolean isAllowAnonymous() {
@@ -61,6 +55,7 @@ public class FsInfo extends FTPInfo {
 
     public void setAllowAnonymous(boolean allowAnonymous) {
         this.allowAnonymous = allowAnonymous;
+        PreferenceUtils.put(getContext(), "allow_anonymous", allowAnonymous);
     }
 
     public boolean isTakeFullWakeLock() {
@@ -69,6 +64,7 @@ public class FsInfo extends FTPInfo {
 
     public void setTakeFullWakeLock(boolean takeFullWakeLock) {
         this.takeFullWakeLock = takeFullWakeLock;
+        PreferenceUtils.put(getContext(), "stayAwake", takeFullWakeLock);
     }
 
     public int getPortNumber() {
@@ -77,6 +73,7 @@ public class FsInfo extends FTPInfo {
 
     public void setPortNumber(int portNumber) {
         this.portNumber = portNumber;
+        PreferenceUtils.put(getContext(), "portNum", String.valueOf(portNumber));
     }
 
     public String getChrootDirPath() {
@@ -85,6 +82,8 @@ public class FsInfo extends FTPInfo {
 
     public void setChrootDirPath(String chrootDirPath) {
         this.chrootDirPath = chrootDirPath;
+        boolean status=FsSettings.setChrootDir(chrootDirPath);
+        Log.d("tag","set chrootDir path status :"+status);
     }
 
     public FsService getFsService() {
@@ -105,10 +104,10 @@ public class FsInfo extends FTPInfo {
         private FsInfo info;
 
         public Builder() {
-            info = new FsInfo();
+            this(null);
         }
 
-        public Builder(@NonNull Context context) {
+        public Builder(Context context) {
             info = new FsInfo(context);
         }
 

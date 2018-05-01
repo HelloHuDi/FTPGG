@@ -12,7 +12,7 @@ public class FTPApp {
     private static Context context;
 
     public static void setAppContext(Context context){
-        FTPApp.context=context;
+        FTPApp.context=context.getApplicationContext();
     }
 
     public static Context getAppContext(){

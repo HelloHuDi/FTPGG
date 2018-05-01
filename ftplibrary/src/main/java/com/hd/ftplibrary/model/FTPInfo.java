@@ -1,7 +1,6 @@
 package com.hd.ftplibrary.model;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 
@@ -12,17 +11,25 @@ import java.io.Serializable;
 public abstract class FTPInfo implements Serializable {
 
     private Context context;
+    
+    String defaultUserNamePassword="ftp";
 
     abstract void clear();
 
     protected Context getContext() {
-        if (context == null)
-            context = FTPApp.getAppContext();
+        checkContext();
         return context;
     }
 
-    void setContext(@NonNull Context context) {
+    void setContext(Context context) {
         this.context = context;
+        checkContext();
     }
+
+    private void checkContext() {
+        if (context == null)
+            context = FTPApp.getAppContext();
+    }
+
 
 }
