@@ -1,22 +1,58 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.hd.ftplibrary">
 
-
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <uses-feature
         android:name="android.software.leanback"
-        android:required="false" />
+        android:required="false"/>
     <uses-feature
         android:name="android.hardware.touchscreen"
-        android:required="false" />
+        android:required="false"/>
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/library_name"
+        android:supportsRtl="true">
+
+        <!--start server-->
+        <receiver
+            android:name=".ftps.RequestStartStopReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="be.ppareit.swiftp.ACTION_START_FTPSERVER"/>
+                <action android:name="be.ppareit.swiftp.ACTION_STOP_FTPSERVER"/>
+            </intent-filter>
+        </receiver>
+
+        <!--server started notification-->
+        <service android:name=".ftps.NsdService"/>
+        <receiver
+            android:name=".ftps.NsdService$StartStopReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="be.ppareit.swiftp.FTPSERVER_STARTED"/>
+                <action android:name="be.ppareit.swiftp.FTPSERVER_STOPPED"/>
+            </intent-filter>
+        </receiver>
+
+        <!--server started notification-->
+        <receiver
+            android:name=".ftps.FsNotification"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="be.ppareit.swiftp.FTPSERVER_STARTED" />
+                <action android:name="be.ppareit.swiftp.FTPSERVER_STOPPED" />
+            </intent-filter>
+        </receiver>
+    </application>
 
 </manifest>

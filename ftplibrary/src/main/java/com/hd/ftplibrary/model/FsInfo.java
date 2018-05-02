@@ -7,25 +7,25 @@ import com.hd.ftplibrary.ftps.FsService;
 import com.hd.ftplibrary.ftps.FsSettings;
 import com.hd.ftplibrary.util.PreferenceUtils;
 
+import java.net.InetAddress;
+
 /**
  * Created by hd on 2018/5/1 .
  * ftp client info
  */
 public class FsInfo extends FTPInfo {
 
+    public final static String FSINFO_TAG = "fsInfo";
+
     private String accountUserName = defaultUserNamePassword, accountPassword = defaultUserNamePassword;
 
     private boolean allowAnonymous = false, takeFullWakeLock = false;
 
-    private int portNumber = 2121;
+    private int portNumber;
 
     private String chrootDirPath;
 
     private FsService fsService;
-
-    private FsInfo() {
-        this(null);
-    }
 
     private FsInfo(Context context) {
         setContext(context);
@@ -82,8 +82,8 @@ public class FsInfo extends FTPInfo {
 
     public void setChrootDirPath(String chrootDirPath) {
         this.chrootDirPath = chrootDirPath;
-        boolean status=FsSettings.setChrootDir(chrootDirPath);
-        Log.d("tag","set chrootDir path status :"+status);
+        boolean status = FsSettings.setChrootDir(chrootDirPath);
+        Log.d("tag", "set chrootDir path status :" + status);
     }
 
     public FsService getFsService() {
@@ -92,6 +92,18 @@ public class FsInfo extends FTPInfo {
 
     public void setFsService(FsService fsService) {
         this.fsService = fsService;
+    }
+
+    public String getIp() {
+        if (fsService != null && FsService.isRunning()) {
+            InetAddress address = FsService.getLocalInetAddress();
+            if (address == null) {
+                Log.e("tag", "Unable to retrieve wifi ip address");
+                return "";
+            }
+            return "ftp://" + address.getHostAddress() + ":" + FsSettings.getPortNumber() + "/";
+        }
+        return "";
     }
 
     @Override

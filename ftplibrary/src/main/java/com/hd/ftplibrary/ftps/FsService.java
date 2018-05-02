@@ -1,4 +1,5 @@
 /*
+Copyright 2018 HelloHuDi
 Copyright 2011-2013 Pieter Pareit
 Copyright 2009 David Revell
 
@@ -20,6 +21,7 @@ along with SwiFTP.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.hd.ftplibrary.ftps;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -37,6 +39,7 @@ import android.util.Log;
 import com.hd.ftplibrary.ftps.server.SessionThread;
 import com.hd.ftplibrary.ftps.server.TcpListener;
 import com.hd.ftplibrary.model.FTPApp;
+import com.hd.ftplibrary.model.FsInfo;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -81,6 +84,8 @@ public class FsService extends Service implements Runnable {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        FsInfo fsInfo = (FsInfo) intent.getSerializableExtra(FsInfo.FSINFO_TAG);
+        fsInfo.setFsService(this);
         shouldExit = false;
         int attempts = 10;
         // The previous server thread may still be cleaning up, wait for it to finish.
@@ -126,6 +131,7 @@ public class FsService extends Service implements Runnable {
         try {
             serverThread.join(10000); // wait 10 sec for server thread to finish
         } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         if (serverThread.isAlive()) {
             Log.w(TAG, "Server thread failed to exit");
@@ -140,8 +146,8 @@ public class FsService extends Service implements Runnable {
                 listenSocket.close();
             }
         } catch (IOException e) {
+            e.printStackTrace();
         }
-
         if (wifiLock != null) {
             Log.d(TAG, "onDestroy: Releasing wifi lock");
             wifiLock.release();
@@ -166,7 +172,7 @@ public class FsService extends Service implements Runnable {
     public void run() {
         Log.d(TAG, "Server thread running");
 
-        if (isConnectedToLocalNetwork() == false) {
+        if (!isConnectedToLocalNetwork()) {
             Log.w(TAG, "run: There is no local network, bailing out");
             stopSelf();
             sendBroadcast(new Intent(ACTION_FAILEDTOSTART));
@@ -198,6 +204,7 @@ public class FsService extends Service implements Runnable {
                     try {
                         wifiListener.join();
                     } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                     wifiListener = null;
                 }
@@ -252,26 +259,31 @@ public class FsService extends Service implements Runnable {
     private void takeWakeLock() {
         if (wakeLock == null) {
             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-            if (FsSettings.shouldTakeFullWakeLock()) {
-                Log.d(TAG, "takeWakeLock: Taking full wake lock");
-                wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, TAG);
-            } else {
-                Log.d(TAG, "maybeTakeWakeLock: Taking partial wake lock");
-                wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-            }
+            if (pm != null)
+                if (FsSettings.shouldTakeFullWakeLock()) {
+                    Log.d(TAG, "takeWakeLock: Taking full wake lock");
+                    wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, TAG);
+                } else {
+                    Log.d(TAG, "maybeTakeWakeLock: Taking partial wake lock");
+                    wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+                }
             wakeLock.setReferenceCounted(false);
         }
-        wakeLock.acquire();
+        if (wakeLock != null)
+            wakeLock.acquire();
     }
 
     private void takeWifiLock() {
         Log.d(TAG, "takeWifiLock: Taking wifi lock");
         if (wifiLock == null) {
             WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            wifiLock = manager.createWifiLock(TAG);
-            wifiLock.setReferenceCounted(false);
+            if (manager != null) {
+                wifiLock = manager.createWifiLock(TAG);
+                wifiLock.setReferenceCounted(false);
+            }
         }
-        wifiLock.acquire();
+        if (wifiLock != null)
+            wifiLock.acquire();
     }
 
     /**
@@ -292,11 +304,9 @@ public class FsService extends Service implements Runnable {
                 if (!networkInterface.getName().matches("^(eth|wlan).*"))
                     continue;
                 for (InetAddress address : Collections.list(networkInterface.getInetAddresses())) {
-                    if (!address.isLoopbackAddress()
-                            && !address.isLinkLocalAddress()
-                            && address instanceof Inet4Address) {
+                    if (!address.isLoopbackAddress() && !address.isLinkLocalAddress() && address instanceof Inet4Address) {
                         if (returnAddress != null) {
-                             Log.w("tag","Found more than one valid address local inet address, why???");
+                            Log.w("tag", "Found more than one valid address local inet address, why???");
                         }
                         returnAddress = address;
                     }
@@ -314,34 +324,35 @@ public class FsService extends Service implements Runnable {
      * @return true if connected to a local network
      */
     public static boolean isConnectedToLocalNetwork() {
-        boolean connected;
+        boolean connected = false;
         Context context = FTPApp.getAppContext();
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo ni = cm.getActiveNetworkInfo();
-        connected = ni != null
-                && ni.isConnected()
-                && (ni.getType() & (ConnectivityManager.TYPE_WIFI | ConnectivityManager.TYPE_ETHERNET)) != 0;
-        if (!connected) {
-            Log.d(TAG, "isConnectedToLocalNetwork: see if it is an WIFI AP");
-            WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            try {
-                Method method = wm.getClass().getDeclaredMethod("isWifiApEnabled");
-                connected = (Boolean) method.invoke(wm);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        if (!connected) {
-            Log.d(TAG, "isConnectedToLocalNetwork: see if it is an USB AP");
-            try {
-                List<NetworkInterface> networkInterfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
-                for (NetworkInterface netInterface : networkInterfaces) {
-                    if (netInterface.getDisplayName().startsWith("rndis")) {
-                        connected = true;
+        if (cm != null) {
+            NetworkInfo ni = cm.getActiveNetworkInfo();
+            connected = ni != null && ni.isConnected() && (ni.getType() & (ConnectivityManager.TYPE_WIFI | ConnectivityManager.TYPE_ETHERNET)) != 0;
+            if (!connected) {
+                Log.d(TAG, "isConnectedToLocalNetwork: see if it is an WIFI AP");
+                WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                if (wm != null)
+                    try {
+                        @SuppressLint("PrivateApi") Method method = wm.getClass().getDeclaredMethod("isWifiApEnabled");
+                        connected = (Boolean) method.invoke(wm);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+            }
+            if (!connected) {
+                Log.d(TAG, "isConnectedToLocalNetwork: see if it is an USB AP");
+                try {
+                    List<NetworkInterface> networkInterfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+                    for (NetworkInterface netInterface : networkInterfaces) {
+                        if (netInterface.getDisplayName().startsWith("rndis")) {
+                            connected = true;
+                        }
+                    }
+                } catch (SocketException e) {
+                    e.printStackTrace();
                 }
-            } catch (SocketException e) {
-                e.printStackTrace();
             }
         }
         return connected;
@@ -395,12 +406,10 @@ public class FsService extends Service implements Runnable {
         Log.d(TAG, "user has removed my activity, we got killed! restarting...");
         Intent restartService = new Intent(getApplicationContext(), this.getClass());
         restartService.setPackage(getPackageName());
-        PendingIntent restartServicePI = PendingIntent.getService(
-                getApplicationContext(), 1, restartService, PendingIntent.FLAG_ONE_SHOT);
-        AlarmManager alarmService = (AlarmManager) getApplicationContext()
-                .getSystemService(Context.ALARM_SERVICE);
-        alarmService.set(AlarmManager.ELAPSED_REALTIME,
-                SystemClock.elapsedRealtime() + 2000, restartServicePI);
+        PendingIntent restartServicePI = PendingIntent.getService(getApplicationContext(), 1, restartService, PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        if (alarmService != null)
+            alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 2000, restartServicePI);
     }
 
 }

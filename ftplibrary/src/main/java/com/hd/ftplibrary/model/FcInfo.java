@@ -10,13 +10,19 @@ import com.hd.ftplibrary.ftpc.FTPClient;
  */
 public class FcInfo extends FTPInfo {
 
-    private String loginUserName = defaultUserNamePassword, loginPassword = defaultUserNamePassword;
+    public final static String FCINFO_TAG = "fcInfo";
+
+    private String loginUserName = defaultUserNamePassword;
+
+    private String loginPassword = defaultUserNamePassword;
+
+    private String host;
+
+    private int port;
+
+    private boolean sendQuitCommand;
 
     private FTPClient ftpClient;
-
-    private FcInfo() {
-        this(null);
-    }
 
     private FcInfo(Context context) {
         setContext(context);
@@ -36,6 +42,30 @@ public class FcInfo extends FTPInfo {
 
     public void setLoginPassword(String loginPassword) {
         this.loginPassword = loginPassword;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public boolean isSendQuitCommand() {
+        return sendQuitCommand;
+    }
+
+    public void setSendQuitCommand(boolean sendQuitCommand) {
+        this.sendQuitCommand = sendQuitCommand;
     }
 
     public FTPClient getFtpClient() {
@@ -70,6 +100,21 @@ public class FcInfo extends FTPInfo {
 
         public FcInfo.Builder setLoginPassword(String loginPassword) {
             info.setLoginPassword(loginPassword);
+            return this;
+        }
+
+        public FcInfo.Builder setHost(String host) {
+            info.setHost(host);
+            return this;
+        }
+
+        public FcInfo.Builder setPort(int port) {
+            info.setPort(port);
+            return this;
+        }
+
+        public FcInfo.Builder setSendQuitCommand(boolean sendQuitCommand) {
+            info.setSendQuitCommand(sendQuitCommand);
             return this;
         }
 

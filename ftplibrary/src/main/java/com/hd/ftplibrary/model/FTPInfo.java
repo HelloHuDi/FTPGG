@@ -11,8 +11,8 @@ import java.io.Serializable;
 public abstract class FTPInfo implements Serializable {
 
     private Context context;
-    
-    String defaultUserNamePassword="ftp";
+
+    String defaultUserNamePassword = "ftp";
 
     abstract void clear();
 
@@ -27,8 +27,15 @@ public abstract class FTPInfo implements Serializable {
     }
 
     private void checkContext() {
-        if (context == null)
-            context = FTPApp.getAppContext();
+        if (context == null) {
+            if (FTPApp.getAppContext() == null) {
+                throw new NullPointerException("must init the ftp applicationContext first ");
+            }else {
+                context = FTPApp.getAppContext();
+            }
+        } else if (FTPApp.getAppContext() == null) {
+            FTPApp.setAppContext(context);
+        }
     }
 
 

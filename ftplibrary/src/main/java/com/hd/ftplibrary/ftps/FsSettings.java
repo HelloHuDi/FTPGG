@@ -1,4 +1,5 @@
 /*
+Copyright 2018 HelloHuDi
 Copyright 2011-2013 Pieter Pareit
 Copyright 2009 David Revell
 

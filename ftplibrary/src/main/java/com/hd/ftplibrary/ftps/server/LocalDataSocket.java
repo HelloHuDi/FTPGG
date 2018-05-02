@@ -1,4 +1,6 @@
 /*
+Copyright 2018 HelloHuDi
+
 Copyright 2009 David Revell
 
 This file is part of SwiFTP.
@@ -56,6 +58,7 @@ public class LocalDataSocket {
             try {
                 server.close();
             } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         server = null;
