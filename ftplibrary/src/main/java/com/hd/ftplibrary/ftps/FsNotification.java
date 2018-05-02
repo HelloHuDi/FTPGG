@@ -32,5 +32,21 @@ public class FsNotification extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("tag", "onReceive broadcast: " + intent.getAction());
+      /*  String action = intent.getAction();
+        if (action != null)
+            switch (action) {
+                case FsService.ACTION_STARTED:
+                    String text;
+                    InetAddress address = FsService.getLocalInetAddress();
+                    if (address == null) {
+                        text = "Unable to retrieve wifi ip address";
+                    } else {
+                        text = "ftp://" + address.getHostAddress() + ":" + FsSettings.getPortNumber() + "/";
+                    }
+                    Log.d("tag","ftp ip : "+ text);
+                    break;
+                case FsService.ACTION_STOPPED:
+                    break;
+            }*/
     }
 }

@@ -1,6 +1,10 @@
 package com.hd.ftplibrary.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.hd.ftplibrary.ftps.FsService;
@@ -13,6 +17,7 @@ import java.net.InetAddress;
  * Created by hd on 2018/5/1 .
  * ftp client info
  */
+@SuppressLint("ParcelCreator")
 public class FsInfo extends FTPInfo {
 
     public final static String FSINFO_TAG = "fsInfo";
@@ -24,8 +29,6 @@ public class FsInfo extends FTPInfo {
     private int portNumber;
 
     private String chrootDirPath;
-
-    private FsService fsService;
 
     private FsInfo(Context context) {
         setContext(context);
@@ -86,16 +89,12 @@ public class FsInfo extends FTPInfo {
         Log.d("tag", "set chrootDir path status :" + status);
     }
 
-    public FsService getFsService() {
-        return fsService;
-    }
-
-    public void setFsService(FsService fsService) {
-        this.fsService = fsService;
+    public boolean isRunning() {
+        return FsService.isRunning();
     }
 
     public String getIp() {
-        if (fsService != null && FsService.isRunning()) {
+        if (isRunning()) {
             InetAddress address = FsService.getLocalInetAddress();
             if (address == null) {
                 Log.e("tag", "Unable to retrieve wifi ip address");
@@ -110,6 +109,44 @@ public class FsInfo extends FTPInfo {
     void clear() {
 
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        Bundle bundle=new Bundle();
+        bundle.putString("accountUserName",accountUserName);
+        bundle.putString("accountPassword",accountPassword);
+        bundle.putString("chrootDirPath",chrootDirPath);
+        bundle.putInt("portNumber",portNumber);
+        bundle.putBoolean("allowAnonymous",allowAnonymous);
+        bundle.putBoolean("takeFullWakeLock",takeFullWakeLock);
+        dest.writeBundle(bundle);
+    }
+
+    public static final Parcelable.Creator<FsInfo> CREATOR = new Creator<FsInfo>() {
+        @Override
+        public FsInfo createFromParcel(Parcel source) {
+            FsInfo fsInfo=new FsInfo(null);
+            Bundle bundle=source.readBundle(getClass().getClassLoader());
+            fsInfo.setAccountUserName(bundle.getString("accountUserName"));
+            fsInfo.setAccountPassword( bundle.getString("accountPassword"));
+            fsInfo.setChrootDirPath(bundle.getString("chrootDirPath"));
+            fsInfo.setPortNumber(bundle.getInt("portNumber"));
+            fsInfo.setAllowAnonymous(bundle.getBoolean("allowAnonymous"));
+            fsInfo.setTakeFullWakeLock(bundle.getBoolean("takeFullWakeLock"));
+            return fsInfo;
+        }
+
+        @Override
+        public FsInfo[] newArray(int size) {
+            return new FsInfo[0];
+        }
+    };
+
 
     public static class Builder {
 

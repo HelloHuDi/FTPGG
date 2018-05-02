@@ -20,12 +20,13 @@
 
     <application
         android:allowBackup="true"
-        android:label="@string/library_name"
         android:supportsRtl="true">
+
+        <service android:name="com.hd.ftplibrary.ftps.FsService" />
 
         <!--start server-->
         <receiver
-            android:name=".ftps.RequestStartStopReceiver"
+            android:name="com.hd.ftplibrary.ftps.RequestStartStopReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="be.ppareit.swiftp.ACTION_START_FTPSERVER"/>
@@ -34,9 +35,9 @@
         </receiver>
 
         <!--server started notification-->
-        <service android:name=".ftps.NsdService"/>
+        <service android:name="com.hd.ftplibrary.ftps.NsdService"/>
         <receiver
-            android:name=".ftps.NsdService$StartStopReceiver"
+            android:name="com.hd.ftplibrary.ftps.NsdService$StartStopReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="be.ppareit.swiftp.FTPSERVER_STARTED"/>
@@ -46,7 +47,7 @@
 
         <!--server started notification-->
         <receiver
-            android:name=".ftps.FsNotification"
+            android:name="com.hd.ftplibrary.ftps.FsNotification"
             android:exported="false">
             <intent-filter>
                 <action android:name="be.ppareit.swiftp.FTPSERVER_STARTED" />

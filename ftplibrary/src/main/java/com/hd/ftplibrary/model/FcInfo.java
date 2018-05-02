@@ -1,6 +1,8 @@
 package com.hd.ftplibrary.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Parcel;
 
 import com.hd.ftplibrary.ftpc.FTPClient;
 
@@ -8,6 +10,7 @@ import com.hd.ftplibrary.ftpc.FTPClient;
  * Created by hd on 2018/5/1 .
  * ftp socket info
  */
+@SuppressLint("ParcelCreator")
 public class FcInfo extends FTPInfo {
 
     public final static String FCINFO_TAG = "fcInfo";
@@ -78,6 +81,16 @@ public class FcInfo extends FTPInfo {
 
     @Override
     void clear() {
+
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
 
     }
 

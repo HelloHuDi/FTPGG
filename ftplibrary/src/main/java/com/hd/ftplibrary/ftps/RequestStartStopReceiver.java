@@ -29,7 +29,6 @@ import android.widget.Toast;
 
 import com.hd.ftplibrary.R;
 import com.hd.ftplibrary.model.FTPApp;
-import com.hd.ftplibrary.model.FsInfo;
 
 public class RequestStartStopReceiver extends BroadcastReceiver {
 
@@ -43,7 +42,6 @@ public class RequestStartStopReceiver extends BroadcastReceiver {
         try {
             if (FsService.ACTION_START_FTPSERVER.equals(intent.getAction())) {
                 Intent serverService = new Intent(context, FsService.class);
-                serverService.putExtra(FsInfo.FSINFO_TAG, intent.getSerializableExtra(FsInfo.FSINFO_TAG));
                 if (!FsService.isRunning()) {
                     warnIfNoExternalStorage();
                     context.startService(serverService);

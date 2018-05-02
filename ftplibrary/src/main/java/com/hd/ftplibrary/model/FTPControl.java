@@ -60,16 +60,14 @@ public class FTPControl {
     }
 
     public static void startSocket(FsInfo fsInfo) {
-        fsInfo.getContext().sendBroadcast(setIntent(fsInfo, true));
+        fsInfo.getContext().sendBroadcast(setIntent(true));
     }
 
     public static void stopSocket(FsInfo fsInfo) {
-        fsInfo.getContext().sendBroadcast(setIntent(fsInfo, false));
+        fsInfo.getContext().sendBroadcast(setIntent(false));
     }
 
-    private static Intent setIntent(FsInfo fsInfo, boolean startService) {
-        Intent intent = new Intent(startService ? FsService.ACTION_START_FTPSERVER : FsService.ACTION_STOP_FTPSERVER);
-        intent.putExtra(FsInfo.FSINFO_TAG, fsInfo);
-        return intent;
+    private static Intent setIntent(boolean startService) {
+        return new Intent(startService ? FsService.ACTION_START_FTPSERVER : FsService.ACTION_STOP_FTPSERVER);
     }
 }

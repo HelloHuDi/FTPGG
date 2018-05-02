@@ -3,7 +3,6 @@ package com.hd.ftpgg;
 import android.app.Application;
 
 import com.hd.ftplibrary.ftpc.FTPClient;
-import com.hd.ftplibrary.ftps.FsService;
 import com.hd.ftplibrary.model.FTPApp;
 import com.hd.ftplibrary.model.FcInfo;
 import com.hd.ftplibrary.model.FsInfo;
@@ -14,28 +13,22 @@ import com.hd.ftplibrary.model.FsInfo;
  */
 public class APP extends Application {
 
-    private FsInfo fsInfo;
+    private static FsInfo fsInfo;
 
-    private FcInfo fcInfo;
+    private static FcInfo fcInfo;
 
-    private FTPClient ftpClient;
+    private static FTPClient ftpClient;
 
-    private FsService fsService;
-
-    public FsInfo getFsInfo() {
+    public static FsInfo getFsInfo() {
         return fsInfo;
     }
 
-    public FcInfo getFcInfo() {
+    public static FcInfo getFcInfo() {
         return fcInfo;
     }
 
-    public FTPClient getFtpClient() {
+    public static FTPClient getFtpClient() {
         return fcInfo.getFtpClient();
-    }
-
-    public FsService getFsService() {
-        return fsInfo.getFsService();
     }
 
     @Override
@@ -48,7 +41,7 @@ public class APP extends Application {
                   .setAllowAnonymous(false)//
                   .setTakeFullWakeLock(true)//
                   .setChrootDirPath("")//
-                  .setPortNumber(2121)//
+                  .setPortNumber(3535)//
                   .build();
         fcInfo = new FcInfo.Builder()//
                   .setLoginUserName("ftp")//

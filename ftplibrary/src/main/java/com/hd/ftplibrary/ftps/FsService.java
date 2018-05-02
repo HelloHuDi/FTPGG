@@ -39,7 +39,6 @@ import android.util.Log;
 import com.hd.ftplibrary.ftps.server.SessionThread;
 import com.hd.ftplibrary.ftps.server.TcpListener;
 import com.hd.ftplibrary.model.FTPApp;
-import com.hd.ftplibrary.model.FsInfo;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -84,8 +83,6 @@ public class FsService extends Service implements Runnable {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        FsInfo fsInfo = (FsInfo) intent.getSerializableExtra(FsInfo.FSINFO_TAG);
-        fsInfo.setFsService(this);
         shouldExit = false;
         int attempts = 10;
         // The previous server thread may still be cleaning up, wait for it to finish.
@@ -411,5 +408,4 @@ public class FsService extends Service implements Runnable {
         if (alarmService != null)
             alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 2000, restartServicePI);
     }
-
 }

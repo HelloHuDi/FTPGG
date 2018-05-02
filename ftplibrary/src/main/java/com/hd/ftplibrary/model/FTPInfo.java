@@ -1,14 +1,13 @@
 package com.hd.ftplibrary.model;
 
 import android.content.Context;
-
-import java.io.Serializable;
+import android.os.Parcelable;
 
 /**
  * Created by hd on 2018/5/1 .
  * ftp info
  */
-public abstract class FTPInfo implements Serializable {
+public abstract class FTPInfo implements Parcelable {
 
     private Context context;
 
@@ -37,6 +36,4 @@ public abstract class FTPInfo implements Serializable {
             FTPApp.setAppContext(context);
         }
     }
-
-
 }

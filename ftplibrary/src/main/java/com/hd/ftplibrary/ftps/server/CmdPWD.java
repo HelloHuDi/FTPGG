@@ -21,10 +21,11 @@ package com.hd.ftplibrary.ftps.server;
 
 import android.util.Log;
 
+import com.hd.ftplibrary.ftps.FsSettings;
+
 import java.io.File;
 import java.io.IOException;
 
-import be.ppareit.swiftp.FsSettings;
 
 /**
  * PRINT WORKING DIRECTORY (PWD)
