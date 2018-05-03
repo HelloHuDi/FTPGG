@@ -1,10 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/splash"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SplashActivity">
+    android:orientation="vertical">
 
-</android.support.constraint.ConstraintLayout>
+    <com.hd.splashscreen.text.SimpleSplashScreen
+        android:id="@+id/screen"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/socket"
+            style="@style/splash_button"
+            android:text="start socket"/>
+
+        <Button
+            android:id="@+id/client"
+            style="@style/splash_button"
+            android:text="start client"/>
+    </LinearLayout>
+</LinearLayout>

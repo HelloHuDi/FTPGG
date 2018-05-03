@@ -12,10 +12,10 @@
         android:layout_height="56dp"
         android:text="start socket"
         android:tag="0"
-        android:onClick="controlServer"/>
+        android:onClick="controlSocket"/>
 
     <TextView
-        android:id="@+id/ip"
+        android:id="@+id/tvLog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

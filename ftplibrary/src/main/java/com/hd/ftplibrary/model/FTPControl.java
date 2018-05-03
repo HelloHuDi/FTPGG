@@ -27,13 +27,14 @@ public class FTPControl {
         stopSocket(fsInfo);
     }
 
-    public static void startClient(FcInfo fcInfo) {
+    public static boolean startClient(FcInfo fcInfo) {
         stopClient(fcInfo);
         FTPClient ftpClient = new FTPClient();
         try {
             String[] message = ftpClient.connect(fcInfo.getHost(), fcInfo.getPort());
             Log.d(FcInfo.FCINFO_TAG, "FTPClient connect message :" + Arrays.toString(message));
             fcInfo.setFtpClient(ftpClient);
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (FTPIllegalReplyException e) {
@@ -41,13 +42,16 @@ public class FTPControl {
         } catch (FTPException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
-    public static void stopClient(FcInfo fcInfo) {
+    public static boolean stopClient(FcInfo fcInfo) {
         FTPClient ftpClient = fcInfo.getFtpClient();
         if (ftpClient != null && ftpClient.isConnected()) {
             try {
                 ftpClient.disconnect(fcInfo.isSendQuitCommand());
+                fcInfo.setFtpClient(null);
+                return true;
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (FTPIllegalReplyException e) {
@@ -55,8 +59,9 @@ public class FTPControl {
             } catch (FTPException e) {
                 e.printStackTrace();
             }
-            fcInfo.setFtpClient(null);
+            return false;
         }
+        return true;
     }
 
     public static void startSocket(FsInfo fsInfo) {
