@@ -22,7 +22,7 @@ import com.hd.ftplibrary.model.FTPControl;
 
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity {
+public class SocketActivity extends AppCompatActivity {
 
     private Button button;
 
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_socket);
         ip = findViewById(R.id.ip);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -54,13 +54,13 @@ public class MainActivity extends AppCompatActivity {
                 if (action != null)
                     switch (action) {
                         case FsService.ACTION_STARTED:
-                            button.setText("stop server");
+                            button.setText("stop socket");
                             button.setTag("1");
                             ip.append("服务开启成功：" + APP.getFsInfo().getIp() + "\n");
                             Log.d("tag", "服务开启成功：" + APP.getFsInfo().getIp() + "\n");
                             break;
                         case FsService.ACTION_STOPPED:
-                            button.setText("start server");
+                            button.setText("start socket");
                             button.setTag("0");
                             ip.append("服务关闭\n");
                             break;

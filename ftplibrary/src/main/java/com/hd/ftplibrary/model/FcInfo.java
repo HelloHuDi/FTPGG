@@ -2,7 +2,9 @@ package com.hd.ftplibrary.model;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.hd.ftplibrary.ftpc.FTPClient;
 
@@ -91,8 +93,33 @@ public class FcInfo extends FTPInfo {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        Bundle bundle=new Bundle();
+        bundle.putString("loginUserName",loginUserName);
+        bundle.putString("loginPassword",loginPassword);
+        bundle.putString("host",host);
+        bundle.putInt("port",port);
+        bundle.putBoolean("sendQuitCommand",sendQuitCommand);
+        dest.writeBundle(bundle);
     }
+
+    public static final Parcelable.Creator<FcInfo> CREATOR = new Creator<FcInfo>() {
+        @Override
+        public FcInfo createFromParcel(Parcel source) {
+            FcInfo fcInfo=new FcInfo(null);
+            Bundle bundle=source.readBundle(getClass().getClassLoader());
+            fcInfo.setLoginUserName(bundle.getString("loginUserName"));
+            fcInfo.setLoginPassword( bundle.getString("loginPassword"));
+            fcInfo.setHost(bundle.getString("host"));
+            fcInfo.setPort(bundle.getInt("port"));
+            fcInfo.setSendQuitCommand(bundle.getBoolean("sendQuitCommand"));
+            return fcInfo;
+        }
+
+        @Override
+        public FcInfo[] newArray(int size) {
+            return new FcInfo[0];
+        }
+    };
 
     public static class Builder {
 
