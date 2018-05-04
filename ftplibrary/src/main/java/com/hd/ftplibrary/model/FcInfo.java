@@ -10,7 +10,7 @@ import com.hd.ftplibrary.ftpc.FTPClient;
 
 /**
  * Created by hd on 2018/5/1 .
- * ftp socket info
+ * ftp client info
  */
 @SuppressLint("ParcelCreator")
 public class FcInfo extends FTPInfo {

@@ -15,7 +15,7 @@ import java.net.InetAddress;
 
 /**
  * Created by hd on 2018/5/1 .
- * ftp client info
+ * ftp socket info
  */
 @SuppressLint("ParcelCreator")
 public class FsInfo extends FTPInfo {
@@ -26,7 +26,7 @@ public class FsInfo extends FTPInfo {
 
     private boolean allowAnonymous = false, takeFullWakeLock = false;
 
-    private int portNumber;
+    private int portNumber;//(0- 65535) default 2121
 
     private String chrootDirPath;
 
@@ -75,6 +75,9 @@ public class FsInfo extends FTPInfo {
     }
 
     public void setPortNumber(int portNumber) {
+        if (portNumber <= 0 || 65535 < portNumber) {
+            portNumber = 2121;
+        }
         this.portNumber = portNumber;
         PreferenceUtils.put(getContext(), "portNum", String.valueOf(portNumber));
     }
@@ -117,23 +120,23 @@ public class FsInfo extends FTPInfo {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        Bundle bundle=new Bundle();
-        bundle.putString("accountUserName",accountUserName);
-        bundle.putString("accountPassword",accountPassword);
-        bundle.putString("chrootDirPath",chrootDirPath);
-        bundle.putInt("portNumber",portNumber);
-        bundle.putBoolean("allowAnonymous",allowAnonymous);
-        bundle.putBoolean("takeFullWakeLock",takeFullWakeLock);
+        Bundle bundle = new Bundle();
+        bundle.putString("accountUserName", accountUserName);
+        bundle.putString("accountPassword", accountPassword);
+        bundle.putString("chrootDirPath", chrootDirPath);
+        bundle.putInt("portNumber", portNumber);
+        bundle.putBoolean("allowAnonymous", allowAnonymous);
+        bundle.putBoolean("takeFullWakeLock", takeFullWakeLock);
         dest.writeBundle(bundle);
     }
 
     public static final Parcelable.Creator<FsInfo> CREATOR = new Creator<FsInfo>() {
         @Override
         public FsInfo createFromParcel(Parcel source) {
-            FsInfo fsInfo=new FsInfo(null);
-            Bundle bundle=source.readBundle(getClass().getClassLoader());
+            FsInfo fsInfo = new FsInfo(null);
+            Bundle bundle = source.readBundle(getClass().getClassLoader());
             fsInfo.setAccountUserName(bundle.getString("accountUserName"));
-            fsInfo.setAccountPassword( bundle.getString("accountPassword"));
+            fsInfo.setAccountPassword(bundle.getString("accountPassword"));
             fsInfo.setChrootDirPath(bundle.getString("chrootDirPath"));
             fsInfo.setPortNumber(bundle.getInt("portNumber"));
             fsInfo.setAllowAnonymous(bundle.getBoolean("allowAnonymous"));

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.hd.ftplibrary.ftps.FsService;
@@ -20,16 +21,32 @@ public class SocketActivity extends BaseActivity {
 
     private TextView tvLog;
 
+    private EditText etPort,etAccountUserName,etAccountPassword;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_socket);
-        tvLog = findViewById(R.id.tvLog);
+        initView();
+        initData();
+    }
+
+    private void initData() {
+        etPort.setText(String.valueOf(APP.getFsInfo().getPortNumber()));
+        etAccountUserName.setText(APP.getFsInfo().getAccountUserName());
+        etAccountPassword.setText(APP.getFsInfo().getAccountPassword());
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(FsService.ACTION_STARTED);
         intentFilter.addAction(FsService.ACTION_STOPPED);
         intentFilter.addAction(FsService.ACTION_FAILEDTOSTART);
         registerReceiver(broadcastReceiver, intentFilter);
+    }
+
+    private void initView() {
+        tvLog = findViewById(R.id.tvLog);
+        etPort = findViewById(R.id.etPort);
+        etAccountUserName = findViewById(R.id.etAccountUserName);
+        etAccountPassword = findViewById(R.id.etAccountPassword);
     }
 
     @Override
@@ -71,11 +88,20 @@ public class SocketActivity extends BaseActivity {
         int tag = Integer.valueOf((String) button.getTag());
         switch (tag) {
             case 0:
+                updateFsInfo();
                 FTPControl.startSocket(APP.getFsInfo());
                 break;
             case 1:
                 FTPControl.stopSocket(APP.getFsInfo());
                 break;
         }
+    }
+
+    private void updateFsInfo() {
+        String portStr = String.valueOf(etPort.getText());
+        int port = (portStr != null && portStr.length() > 0) ? Integer.valueOf(portStr) : 2121;
+        APP.getFsInfo().setPortNumber(port);
+        APP.getFsInfo().setAccountUserName(etAccountUserName.getText().toString());
+        APP.getFsInfo().setAccountPassword(etAccountPassword.getText().toString());
     }
 }

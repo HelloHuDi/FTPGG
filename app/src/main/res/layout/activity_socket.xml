@@ -7,6 +7,73 @@
     android:layout_height="match_parent"
     tools:context=".SocketActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:text="PORT"/>
+
+        <EditText
+            android:id="@+id/etPort"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:inputType="number"
+            android:hint="e.g. : 2121"
+            android:text=""/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:text="ACCOUNT USERNAME"/>
+
+        <EditText
+            android:id="@+id/etAccountUserName"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="e.g. : ftp"
+            android:text=""/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:text="ACCOUNT PASSWORD"/>
+
+        <EditText
+            android:id="@+id/etAccountPassword"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="e.g. : ftp"
+            android:text=""/>
+    </LinearLayout>
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="56dp"
