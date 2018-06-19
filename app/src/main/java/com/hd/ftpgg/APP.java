@@ -36,16 +36,17 @@ public class APP extends Application {
         super.onCreate();
         FTPApp.setAppContext(this);
         fsInfo = new FsInfo.Builder()//
-                  .setAccountUserName("ftp")//
-                  .setAccountPassword("ftp")//
-                  .setAllowAnonymous(false)//
-                  .setTakeFullWakeLock(true)//
-                  .setChrootDirPath("")//
-                  .setPortNumber(3535)//
-                  .build();
+                                     .setAccountUserName("ftp")//
+                                     .setAccountPassword("ftp")//
+                                     .setAllowAnonymous(false)//
+                                     .setTakeFullWakeLock(true)//
+                                     .setChrootDirPath("")//
+                                     .setPortNumber(3535)//
+                                     .build();
         fcInfo = new FcInfo.Builder()//
-                  .setLoginUserName("ftp")//
-                  .setLoginPassword("ftp")//
-                  .build();
+                                     .setLoginUserName("ftp")//
+                                     .setLoginPassword("ftp")//
+                                     .setPort(3535)//
+                                     .build();
     }
 }

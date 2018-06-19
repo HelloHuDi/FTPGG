@@ -64,24 +64,29 @@ public class SocketActivity extends BaseActivity {
             if (action != null)
                 switch (action) {
                     case FsService.ACTION_STARTED:
-                        button.setText("stop socket");
-                        button.setTag("1");
-                        tvLog.append("服务开启成功,局域网下，使用浏览器访问下面地址：\n\n" + APP.getFsInfo().getIp() + "\n\n");
-                        Log.d("tag", "服务开启成功 ：" + APP.getFsInfo().getIp() + "\n");
+                        updateButton("stop socket", "1");
+                        updateLog("服务开启成功,局域网下，使用浏览器访问下面地址：\n\n" + APP.getFsInfo().getIp() + "\n\n");
                         break;
                     case FsService.ACTION_STOPPED:
-                        button.setText("start socket");
-                        button.setTag("0");
-                        tvLog.append("服务关闭\n\n");
+                        updateButton("start socket", "0");
+                        updateLog("服务关闭\n\n");
                         break;
                     case FsService.ACTION_FAILEDTOSTART:
-                        button.setText("start socket");
-                        button.setTag("0");
-                        tvLog.append("服务启动失败\n\n");
+                        updateButton("start socket", "0");
+                        updateLog("服务启动失败\n\n");
                         break;
                 }
         }
     };
+
+    private void updateLog(String text) {
+        tvLog.append(text);
+    }
+
+    private void updateButton(String s, String s2) {
+        button.setText(s);
+        button.setTag(s2);
+    }
 
     public void controlSocket(View view) {
         button = (Button) view;

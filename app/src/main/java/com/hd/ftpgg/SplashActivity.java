@@ -46,12 +46,14 @@ public class SplashActivity extends BaseActivity implements SimpleSplashFinishCa
 
     private void requestPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED || checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_CODE);
-            }else{
-                permissionGranted=true;
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED || //
+                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, //
+                                                Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_CODE);
+            } else {
+                permissionGranted = true;
             }
-        }else{
+        } else {
             permissionGranted = true;
         }
     }
@@ -81,14 +83,15 @@ public class SplashActivity extends BaseActivity implements SimpleSplashFinishCa
             Class cls = null;
             switch (view.getId()) {
                 case R.id.socket:
-                    cls=SocketActivity.class;
+                    cls = SocketActivity.class;
                     break;
                 case R.id.client:
-                    cls=ClientActivity.class;
+                    cls = ClientActivity.class;
                     break;
             }
-            startActivity(new Intent(this,cls));
-        }else{
+            startActivity(new Intent(this, cls));
+            finish();
+        } else {
             Toast.makeText(this, "Permissions are rejected !", Toast.LENGTH_LONG).show();
         }
     }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.hd.ftplibrary.callback.FTPClientCallback;
 import com.hd.ftplibrary.ftpc.FTPClient;
 
 /**
@@ -28,6 +29,8 @@ public class FcInfo extends FTPInfo {
     private boolean sendQuitCommand;
 
     private FTPClient ftpClient;
+
+    private FTPClientCallback callback;
 
     private FcInfo(Context context) {
         setContext(context);
@@ -79,6 +82,14 @@ public class FcInfo extends FTPInfo {
 
     public void setFtpClient(FTPClient ftpClient) {
         this.ftpClient = ftpClient;
+    }
+
+    public FTPClientCallback getCallback() {
+        return callback;
+    }
+
+    public void setCallback(FTPClientCallback callback) {
+        this.callback = callback;
     }
 
     @Override
@@ -150,6 +161,11 @@ public class FcInfo extends FTPInfo {
 
         public FcInfo.Builder setPort(int port) {
             info.setPort(port);
+            return this;
+        }
+
+        public FcInfo.Builder setCallback(FTPClientCallback callback) {
+            info.setCallback(callback);
             return this;
         }
 

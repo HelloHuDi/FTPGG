@@ -7,9 +7,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.hd.ftplibrary.callback.FTPClientCallback;
 import com.hd.ftplibrary.model.FTPControl;
 
-public class ClientActivity extends BaseActivity {
+public class ClientActivity extends BaseActivity implements FTPClientCallback {
 
     private Button button;
 
@@ -56,16 +57,40 @@ public class ClientActivity extends BaseActivity {
     @SuppressLint("SetTextI18n")
     private void startClient() {
         updateFcInfo();
-        boolean success = FTPControl.startClient(APP.getFcInfo());
+        APP.getFcInfo().setCallback(this);
+        FTPControl.startClient(APP.getFcInfo());
+    }
+
+    @Override
+    public void startUp(boolean success) {
         if (success) {
-            button.setText("stop client");
-            button.setTag("1");
-            tvLog.append("ftp服务连接成功 \n\n");
+            updateButton("stop client", "1");
+            updateLog("ftp服务连接成功 \n\n");
         } else {
-            button.setText("start client");
-            button.setTag("0");
-            tvLog.append("ftp服务连接失败 \n\n");
+            updateButton("start client", "0");
+            updateLog("ftp服务连接失败 \n\n");
         }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void stopClient() {
+        boolean success = FTPControl.stopClient(APP.getFcInfo());
+        if (success) {
+            updateButton("start client", "1");
+            updateLog("ftp服务断开连接成功 \n\n");
+        } else {
+            updateButton("stop client", "0");
+            updateLog("ftp服务断开连接失败 \n\n");
+        }
+    }
+
+    private void updateLog(String text) {
+        tvLog.setText(text);
+    }
+
+    private void updateButton(String s, String s2) {
+        button.setText(s);
+        button.setTag(s2);
     }
 
     private void updateFcInfo() {
@@ -75,19 +100,5 @@ public class ClientActivity extends BaseActivity {
         APP.getFcInfo().setPort(port);
         APP.getFcInfo().setLoginUserName(etUserName.getText().toString());
         APP.getFcInfo().setLoginUserName(etPassword.getText().toString());
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void stopClient() {
-        boolean success = FTPControl.stopClient(APP.getFcInfo());
-        if (success) {
-            button.setText("start client");
-            button.setTag("1");
-            tvLog.append("ftp服务断开连接成功 \n\n");
-        } else {
-            button.setText("stop client");
-            button.setTag("0");
-            tvLog.append("ftp服务断开连接失败 \n\n");
-        }
     }
 }
