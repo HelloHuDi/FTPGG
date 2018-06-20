@@ -7,16 +7,65 @@
 </p>
 
 
-## **本工程目的**：
+### **本工程目的**：
 
-### 封装一个Android下的FTP交互工具
+#### 封装一个Android下的FTP交互工具
 
-## **本工程目标**：
+### **本工程目标**：
 
-### 1. 基于[swiftp](https://github.com/ppareit/swiftp)熟悉ftp
+#### 1. 基于[swiftp][0]熟悉ftp
 
-### 2. 基于[ftp4j](http://www.sauronsoftware.it/projects/ftp4j/)实现双向文件传输
+#### 2. 基于[ftp4j][1]实现双向文件传输
 
-### **本工程源码来源于[swiftp](https://github.com/ppareit/swiftp)，[ftp4j](http://www.sauronsoftware.it/projects/ftp4j/)，并会长期同步原作源码，部分内容可能会基于GPL协议稍作修改**
+#### **本工程源码来源于[swiftp][0]，[ftp4j][1]，并会长期同步原作源码，部分内容可能会基于[GPL](LICENSE)协议稍作修改**
 
-### **关注本工程的盆友可转至原工程查看源码，感谢开源!**
+#### **关注本工程的盆友可转至原工程查看源码，感谢开源!**
+
+[0]: https://github.com/ppareit/swiftp
+[1]: http://www.sauronsoftware.it/projects/ftp4j/
+
+#### dependencies :
+
+```
+dependencies {
+    //...
+    implementation 'com.hd:ftpgg:1.0'
+}
+```
+
+#### code :
+
+##### about client
+
+```
+FcInfo fcInfo = new FcInfo.Builder()//
+                   .setLoginUserName("ftp")//
+                   .setLoginPassword("ftp")//
+                   .setPort(3535)//
+                   .build();
+                   
+//start-up client
+FTPControl.startClient(fcInfo);
+
+//stop client
+FTPControl.stopClient(fcInfo);
+```
+
+##### about socket
+
+```
+FsInfo fsInfo = new FsInfo.Builder()//
+                    .setAccountUserName("ftp")//
+                    .setAccountPassword("ftp")//
+                    .setAllowAnonymous(false)//
+                    .setTakeFullWakeLock(true)//
+                    .setChrootDirPath("")//
+                    .setPortNumber(3535)//
+                    .build();
+
+//start-up socket
+FTPControl.startSocket(fsInfo);
+
+//stop socket
+FTPControl.stopSocket(fsInfo);
+```
